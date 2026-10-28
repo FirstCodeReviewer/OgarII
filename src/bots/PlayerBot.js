@@ -56,15 +56,14 @@ class PlayerBot extends Bot {
 
         const atMaxCells = player.ownedCells.length >= this.listener.settings.playerMaxCells;
         const willingToSplit = player.ownedCells.length <= 2;
-        const cellCount = Object.keys(player.visibleCells).length;
+        const cellCount = player.visibleCells.size;
 
         let mouseX = 0;
         let mouseY = 0;
         let bestPrey = null;
         let splitkillObstacleNearby = false;
 
-        for (let id in player.visibleCells) {
-            const check = player.visibleCells[id];
+        for (const check of player.visibleCells) {
             const truncatedInfluence = Math.log10(cell.squareSize);
             let dx = check.x - cell.x;
             let dy = check.y - cell.y;
