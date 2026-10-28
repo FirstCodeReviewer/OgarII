@@ -56,8 +56,12 @@ class ChatChannel {
         if (this.shouldFilter(message))
             return;
         const sourceInfo = source == null ? serverSource : getSourceFromConnection(source);
-        for (let i = 0, l = this.connections.length; i < l; i++)
-            this.connections[i].protocol.onChatMessage(sourceInfo, message);
+        for (let i = 0, l = this.connections.length; i < l; i++) {
+            const recipient = this.connections[i];
+            // avoid sending broadcast messages to player bots
+            if (!recipient.isExternal) continue;
+            recipient.protocol.onChatMessage(sourceInfo, message);
+        }
     }
     /**
      * @param {Connection=} source
@@ -65,6 +69,8 @@ class ChatChannel {
      * @param {string} message
      */
     directMessage(source, recipient, message) {
+        // avoid sending broadcast messages to player bots
+        if (!recipient.isExternal) return;
         if (this.shouldFilter(message))
             return;
         const sourceInfo = source == null ? serverSource : getSourceFromConnection(source);
