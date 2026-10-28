@@ -465,12 +465,12 @@ function writeCellData4(writer, source, protocol, cell, includeType, includeSize
 
     let flags = 0;
     if (cell.isSpiked) flags |= 0x01;
-    if (includeSkin) flags |= 0x04;
+    // Protocols 4/5 reserve 0x04 for eight fixed bytes, not a skin string.
+    // Skin names are transmitted only by protocol 6 and newer.
     if (cell.isAgitated) flags |= 0x10;
     if (cell.type === 3) flags |= 0x20;
     writer.writeUInt8(flags);
 
-    if (includeSkin) writer.writeZTStringUTF8(cell.skin);
     if (includeName) writer.writeZTStringUCS2(cell.name);
     else writer.writeUInt16(0);
 }
